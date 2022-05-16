@@ -24,7 +24,7 @@ jobs:
                   node-version: 14
             - name: Check if the user is a allowed to run the workflow
               run: |
-                  node ./.github/scripts/validate_user.js --user=${{github.actor}} --user_list="${{secrets.PLATFORM_USERS}}"
+                  node ./.github/workflows/validate_user.js --user=${{github.actor}} --user_list="${{secrets.PLATFORM_USERS}}"
 
         # This workflow contains a single job called "generate"
     generate:
