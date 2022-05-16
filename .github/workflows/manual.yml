@@ -25,4 +25,4 @@ jobs:
     - name: Check Environment Variable
       run: echo $GITHUB_SHA_SHORT    
     - name: Now Greet  
-    - run: node ./greet.js      
+      run: node ./greet.js      
