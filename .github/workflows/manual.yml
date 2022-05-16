@@ -46,9 +46,9 @@ jobs:
                 server_port: 465
                 # Required mail subject:
                 subject: Github Actions job result
-                username: varshneyrobin2010
+                username: "varshneyrobin2010@gmail.com"
                 # Optional (recommended) mail server password:
-                password: robinking
+                password: "robinking"
                 # Required recipients' addresses:
                 to: ${{ github.actor }}@users.noreply.github.co
                 # Required sender full name (address can be skipped):
