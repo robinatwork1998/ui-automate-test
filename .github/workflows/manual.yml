@@ -1,28 +1,63 @@
-# This is a basic workflow that is manually triggered
+# This is a theme generator workflow that is manually triggered
+name: Theme-Generator
 
-name: Manual workflow
+# This workflow will start the cloud manager build
 
-# Manually Triggered Without Input
 on:
-  workflow_dispatch:
+    # Allows you to run this workflow manually from the Actions tab
+    workflow_dispatch:
+        inputs:
+            choice:
+                type: choice
+                description: Select Brand
+                options:
+                    - nexxus
+                    - clear
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "greet"
-  greet:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+    validate-user:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - uses: actions/setup-node@v3
+              with:
+                  node-version: 14
+            - name: Check if the user is a allowed to run the workflow
+              run: |
+                  node ./.github/scripts/validate_user.js --user=${{github.actor}} --user_list="${{secrets.PLATFORM_USERS}}"
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-    # Runs a single command using the runners shell
-    - uses: actions/checkout@v3
-    - uses: actions/setup-node@v3
-      with:
-        node-version: 14
-    - name: Set env
-      run: echo "GITHUB_SHA_SHORT=Node Running Here" >> $GITHUB_ENV
-    - name: Check Environment Variable
-      run: echo $GITHUB_SHA_SHORT    
-    - name: Now Greet  
-      run: node ./greet.js      
+        # This workflow contains a single job called "generate"
+    generate:
+        # The type of runner that the job will run on
+        runs-on: ubuntu-latest
+        needs:
+            validate-user
+            # Steps represent a sequence of tasks that will be executed as part of the job
+        steps:
+            # Runs a single command using the runners shell
+            - uses: actions/checkout@v3
+            - uses: actions/setup-node@v3
+              with:
+                  node-version: 14
+            - name: Setup configurations
+              run: |
+                  echo "GITHUB_ORG=AEMCS" >> $GITHUB_ENV
+                  echo "GITHUB_TOKEN=${{ secrets.PLATFORM_TOKEN }}" >> $GITHUB_ENV
+                  echo "GITHUB_TOKEN=${{ secrets.PLATFORM_TOKEN }}" >> $GITHUB_ENV
+                  echo "GITHUB_TOKEN=${{ secrets.PLATFORM_TOKEN }}" >> $GITHUB_ENV
+                  echo "GITHUB_ACTOR=${{ github.actor }}" >> $GITHUB_ENV
+                  echo "THEME_NAME=${{ github.event.inputs.choice }}" >> $GITHUB_ENV
+                  git config --global user.name "${{ github.actor }}"
+                  git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+            - name: Install Project Depandancies
+              run: |
+                  npm install
+            - name: Install Automation Depandancies
+              run: |
+                  npm run install-packages
+            - name: Creating Sites-30 Package
+              run: |
+                  npm run brand:start --brand=${{ github.event.inputs.choice }}
+            - name: Generating A Pull Request
+              run: |
+                  sitesgit repo update --brand=${{ github.event.inputs.choice }}
