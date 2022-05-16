@@ -21,7 +21,7 @@ jobs:
       with:
         node-version: 14
     - name: Set env
-      run: echo "GITHUB_SHA_SHORT="Node Running Here" >> $GITHUB_ENV
+      run: echo "GITHUB_SHA_SHORT=Node Running Here" >> $GITHUB_ENV
     - name: Check Environment Variable
       run: echo $GITHUB_SHA_SHORT    
     - name: Now Greet  
