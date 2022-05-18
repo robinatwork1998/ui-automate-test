@@ -13,6 +13,12 @@ on:
                 options:
                     - nexxus
                     - clear
+            choice2:
+                type: choice
+                description: Select one
+                options:
+                    - jh
+                    - clekjar
 
 jobs:
     validate-user:
